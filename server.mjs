@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { createServer } from 'node:http';
-import { readFileSync, existsSync, createReadStream } from 'node:fs';
+import { readFileSync, existsSync, createReadStream, mkdirSync } from 'node:fs';
 import { extname, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
@@ -12,7 +12,7 @@ import { initMailer, verifyMailer, sendMail, welcomeMail, resetPasswordMail, ord
 const PORT = process.env.PORT || 3000;
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = join(ROOT, 'public');
-const DB_PATH = join(ROOT, 'data/app.db');
+const DB_PATH = process.env.SQLITE_DB_PATH || join(ROOT, 'data/app.db');
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 const MONGODB_DB = process.env.MONGODB_DB || 'vite_gourmand';
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION || 'order_analytics';
@@ -32,6 +32,7 @@ const DB_PASSWORD = process.env.DB_PASSWORD || '';
 let USE_MYSQL = Boolean(DB_NAME && DB_HOST && DB_USER);
 
 let sqliteDb;
+let sqliteDbPath = DB_PATH;
 let mysqlPool;
 
 const sessions = new Map();
@@ -156,9 +157,19 @@ async function initRelationalDb() {
     }
   }
 
-  sqliteDb = new DatabaseSync(DB_PATH);
+  try {
+    mkdirSync(dirname(DB_PATH), { recursive: true });
+    sqliteDb = new DatabaseSync(DB_PATH);
+    sqliteDbPath = DB_PATH;
+  } catch (error) {
+    const fallbackPath = join('/tmp', 'vite-gourmand', 'app.db');
+    mkdirSync(dirname(fallbackPath), { recursive: true });
+    sqliteDb = new DatabaseSync(fallbackPath);
+    sqliteDbPath = fallbackPath;
+    console.warn(`Chemin SQLite non accessible (${DB_PATH}). Bascule sur ${fallbackPath}.`, error.message);
+  }
   sqliteDb.exec(readFileSync(join(ROOT, 'db/schema.sql'), 'utf8'));
-  console.log(`Base relationnelle active: SQLite (${DB_PATH})`);
+  console.log(`Base relationnelle active: SQLite (${sqliteDbPath})`);
 }
 
 async function run(query, ...params) {
