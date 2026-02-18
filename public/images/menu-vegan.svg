@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2f6f3f"/>
+      <stop offset="100%" stop-color="#98d6a5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="1020" cy="170" r="170" fill="#ffffff2f"/>
+  <circle cx="1060" cy="620" r="210" fill="#ffffff1f"/>
+  <rect x="70" y="110" width="640" height="580" rx="30" fill="#173120aa"/>
+  <text x="115" y="230" fill="#e7f9ea" font-size="78" font-family="Georgia, serif" font-weight="700">Menu Vegan</text>
+  <text x="115" y="300" fill="#d2f0d8" font-size="34" font-family="Arial, sans-serif">Salades composees, legumes rotis, fruits frais</text>
+  <text x="115" y="360" fill="#d2f0d8" font-size="30" font-family="Arial, sans-serif">Cuisine vegetale moderne et legere</text>
+  <g transform="translate(850 360)">
+    <circle cx="0" cy="0" r="154" fill="#ecfff1"/>
+    <circle cx="0" cy="0" r="124" fill="#c2ebcc"/>
+    <ellipse cx="-34" cy="-20" rx="42" ry="22" fill="#6aa26c"/>
+    <ellipse cx="24" cy="18" rx="36" ry="20" fill="#3d8651"/>
+    <ellipse cx="52" cy="-28" rx="24" ry="16" fill="#95c16b"/>
+  </g>
+</svg>

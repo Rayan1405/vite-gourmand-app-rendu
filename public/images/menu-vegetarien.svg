@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4d7f3a"/>
+      <stop offset="100%" stop-color="#c7de8f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="1030" cy="190" r="170" fill="#ffffff2b"/>
+  <circle cx="1080" cy="620" r="220" fill="#ffffff1b"/>
+  <rect x="70" y="110" width="640" height="580" rx="30" fill="#24331ea8"/>
+  <text x="115" y="230" fill="#eff7df" font-size="72" font-family="Georgia, serif" font-weight="700">Menu Vegetarien</text>
+  <text x="115" y="300" fill="#e2f0c8" font-size="34" font-family="Arial, sans-serif">Legumes de saison, cereales et saveurs douces</text>
+  <text x="115" y="360" fill="#e2f0c8" font-size="30" font-family="Arial, sans-serif">Equilibre parfait pour tous les convives</text>
+  <g transform="translate(850 360)">
+    <circle cx="0" cy="0" r="154" fill="#f8fdea"/>
+    <circle cx="0" cy="0" r="122" fill="#d3e6a2"/>
+    <circle cx="-34" cy="-22" r="22" fill="#759f55"/>
+    <circle cx="24" cy="18" r="24" fill="#8bbb65"/>
+    <circle cx="52" cy="-26" r="18" fill="#4f7f46"/>
+  </g>
+</svg>

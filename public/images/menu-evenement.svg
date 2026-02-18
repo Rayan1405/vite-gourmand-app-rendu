@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3f566a"/>
+      <stop offset="100%" stop-color="#9fb8cc"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="1020" cy="170" r="170" fill="#ffffff2a"/>
+  <circle cx="1080" cy="620" r="220" fill="#ffffff1a"/>
+  <rect x="70" y="110" width="640" height="580" rx="30" fill="#1c2731ab"/>
+  <text x="115" y="230" fill="#ebf3fb" font-size="74" font-family="Georgia, serif" font-weight="700">Menu Evenement</text>
+  <text x="115" y="300" fill="#d3e1ee" font-size="34" font-family="Arial, sans-serif">Buffet cocktail, ateliers et plats partages</text>
+  <text x="115" y="360" fill="#d3e1ee" font-size="30" font-family="Arial, sans-serif">Concu pour receptions et seminaires</text>
+  <g transform="translate(850 360)">
+    <circle cx="0" cy="0" r="154" fill="#f3f8fd"/>
+    <circle cx="0" cy="0" r="122" fill="#cadcea"/>
+    <rect x="-62" y="-36" width="46" height="22" rx="8" fill="#5f7f98"/>
+    <rect x="-6" y="6" width="44" height="22" rx="8" fill="#7b9cb4"/>
+    <rect x="40" y="-28" width="38" height="20" rx="8" fill="#9bb3c6"/>
+  </g>
+</svg>

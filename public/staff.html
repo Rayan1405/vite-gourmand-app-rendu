@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite & Gourmand - Espace Employe/Admin</title>
+    <link rel="stylesheet" href="./styles.css?v=20260217-21" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-content container">
+        <p class="eyebrow">Espace Employe / Administrateur</p>
+        <h1>Pilotage des Commandes</h1>
+        <div class="hero-chips">
+          <button id="sidebar-toggle" type="button" class="sidebar-toggle" aria-label="Ouvrir le panneau lateral" aria-expanded="false">❯</button>
+          <span id="staff-user-chip">Compte interne</span>
+          <button id="logout-btn" type="button">Deconnexion</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container staff-shell">
+      <aside id="staff-sidebar" class="staff-sidebar" aria-label="Navigation employe/admin">
+        <div class="staff-sidebar-head">
+          <h3>Navigation</h3>
+          <button id="sidebar-close" type="button" class="sidebar-close-btn">Fermer</button>
+        </div>
+        <nav class="staff-nav">
+          <button type="button" class="staff-nav-item active" data-view="dashboard">Accueil</button>
+          <button type="button" class="staff-nav-item" data-view="orders">Commandes</button>
+          <button type="button" class="staff-nav-item" data-view="clients">Nos clients</button>
+          <button type="button" class="staff-nav-item" data-view="menus">Nos menus</button>
+          <button type="button" class="staff-nav-item" id="nav-reviews" data-view="reviews" hidden>Avis clients</button>
+          <button type="button" class="staff-nav-item" id="nav-staff-management" data-view="staff-management" hidden>Gestion employes</button>
+        </nav>
+      </aside>
+      <button id="sidebar-overlay" class="sidebar-overlay" type="button" hidden aria-label="Fermer le menu"></button>
+
+      <div class="staff-main page-grid" id="staff-views">
+        <section class="panel staff-view" id="dashboard-view" data-view="dashboard">
+          <div class="section-head">
+            <h2>Tableau de bord</h2>
+            <p class="small">Suivi en temps reel des commandes et du chiffre d'affaires livre.</p>
+          </div>
+
+          <div class="dashboard-metrics">
+            <article class="dashboard-metric-card">
+              <p class="dashboard-metric-label">Total commandes</p>
+              <p id="metric-total-orders" class="dashboard-metric-value">0</p>
+            </article>
+            <article class="dashboard-metric-card">
+              <p class="dashboard-metric-label">Commandes en cours</p>
+              <p id="metric-ongoing-orders" class="dashboard-metric-value">0</p>
+            </article>
+            <article class="dashboard-metric-card">
+              <p class="dashboard-metric-label">CA termine cumule</p>
+              <p id="metric-delivered-revenue" class="dashboard-metric-value">0 EUR</p>
+            </article>
+          </div>
+
+          <div class="form-card">
+            <h3>Diagramme des statuts</h3>
+            <div id="orders-status-chart" class="orders-status-chart"></div>
+          </div>
+        </section>
+
+        <section class="panel staff-view" id="orders-view" data-view="orders" hidden>
+          <div class="section-head">
+            <h2>Commandes clients</h2>
+          </div>
+
+          <div class="form-card">
+            <div class="staff-management-head">
+              <h3>Commandes recues</h3>
+              <button id="refresh-employee-orders" type="button">Actualiser</button>
+            </div>
+            <p id="employee-orders-summary" class="small">Chargement des commandes...</p>
+            <div class="orders-kanban" id="orders-kanban-board">
+              <section class="orders-kanban-col" data-status="pending">
+                <header><h4>En attente</h4><span class="orders-kanban-count" data-count-for="pending">0</span></header>
+                <div class="orders-kanban-list" data-status="pending"></div>
+              </section>
+              <section class="orders-kanban-col" data-status="accepted">
+                <header><h4>Acceptees</h4><span class="orders-kanban-count" data-count-for="accepted">0</span></header>
+                <div class="orders-kanban-list" data-status="accepted"></div>
+              </section>
+              <section class="orders-kanban-col" data-status="preparing">
+                <header><h4>En preparation</h4><span class="orders-kanban-count" data-count-for="preparing">0</span></header>
+                <div class="orders-kanban-list" data-status="preparing"></div>
+              </section>
+              <section class="orders-kanban-col" data-status="delivering">
+                <header><h4>En livraison</h4><span class="orders-kanban-count" data-count-for="delivering">0</span></header>
+                <div class="orders-kanban-list" data-status="delivering"></div>
+              </section>
+              <section class="orders-kanban-col" data-status="delivered">
+                <header><h4>Livrees</h4><span class="orders-kanban-count" data-count-for="delivered">0</span></header>
+                <div class="orders-kanban-list" data-status="delivered"></div>
+              </section>
+              <section class="orders-kanban-col" data-status="awaiting_material_return">
+                <header><h4>Retour materiel</h4><span class="orders-kanban-count" data-count-for="awaiting_material_return">0</span></header>
+                <div class="orders-kanban-list" data-status="awaiting_material_return"></div>
+              </section>
+              <section class="orders-kanban-col" data-status="finished">
+                <header><h4>Terminees</h4><span class="orders-kanban-count" data-count-for="finished">0</span></header>
+                <div class="orders-kanban-list" data-status="finished"></div>
+              </section>
+              <section class="orders-kanban-col" data-status="cancelled">
+                <header><h4>Annulees</h4><span class="orders-kanban-count" data-count-for="cancelled">0</span></header>
+                <div class="orders-kanban-list" data-status="cancelled"></div>
+              </section>
+            </div>
+          </div>
+
+          <p id="employee-result" class="status-line small"></p>
+        </section>
+
+        <section class="panel staff-view" id="clients-view" data-view="clients" hidden>
+          <div class="form-card" id="clients-section">
+            <div class="staff-management-head">
+              <h3>Nos clients</h3>
+              <button id="refresh-clients-btn" type="button">Actualiser</button>
+            </div>
+            <div class="staff-table-wrap">
+              <table class="staff-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Prenom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Telephone</th>
+                    <th>Commandes</th>
+                    <th>Montant total</th>
+                    <th>Derniere commande</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="clients-table-body"></tbody>
+              </table>
+            </div>
+            <p id="clients-result" class="status-line small"></p>
+          </div>
+        </section>
+
+        <section class="panel staff-view" id="menus-view" data-view="menus" hidden>
+          <div id="menus-section" class="form-card">
+            <div class="staff-management-head">
+              <h3>Nos menus</h3>
+              <button id="open-create-menu-modal" type="button">Nouveau menu</button>
+            </div>
+            <div class="staff-table-wrap">
+              <table class="staff-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Theme</th>
+                    <th>Regime</th>
+                    <th>Min pers.</th>
+                    <th>Prix min</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="menus-table-body"></tbody>
+              </table>
+            </div>
+            <p id="menus-result" class="status-line small"></p>
+          </div>
+        </section>
+
+        <section class="panel staff-view" id="reviews-view" data-view="reviews" hidden>
+          <div class="form-card" id="reviews-section">
+            <div class="staff-management-head">
+              <h3>Avis clients</h3>
+              <button id="refresh-reviews-btn" type="button">Actualiser</button>
+            </div>
+            <div class="staff-table-wrap">
+              <table class="staff-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Email</th>
+                    <th>Commande</th>
+                    <th>Menu</th>
+                    <th>Note</th>
+                    <th>Commentaire</th>
+                    <th>Statut avis</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reviews-table-body"></tbody>
+              </table>
+            </div>
+            <p id="reviews-result" class="status-line small"></p>
+          </div>
+        </section>
+
+        <section class="panel staff-view" id="staff-management-view" data-view="staff-management" hidden>
+          <div class="section-head">
+            <h2>Gestion employes / admin</h2>
+            <p class="small">Creation et modification des comptes internes.</p>
+          </div>
+
+          <div class="form-card">
+            <div class="staff-management-head">
+              <h3>Comptes internes</h3>
+              <button id="open-create-staff-modal" type="button">Nouveau compte interne</button>
+            </div>
+            <div class="staff-table-wrap">
+              <table class="staff-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Role</th>
+                    <th>Prenom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Telephone</th>
+                    <th>Actif</th>
+                    <th>Cree le</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="staff-users-table-body"></tbody>
+              </table>
+            </div>
+            <p id="staff-management-result" class="status-line small"></p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <section id="staff-form-modal" class="modal" hidden aria-labelledby="staff-form-title">
+      <div class="modal__backdrop" data-close-staff-modal></div>
+      <div class="modal__dialog">
+        <button type="button" class="modal__close" id="close-staff-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Gestion interne</p>
+        <h3 class="modal__title" id="staff-form-title">Compte interne</h3>
+        <p class="modal__meta" id="staff-form-subtitle">Saisis les informations du compte.</p>
+
+        <form id="staff-modal-form" class="staff-modal-form">
+          <input type="hidden" name="userId" />
+          <label>
+            Role
+            <select name="role" required>
+              <option value="employee">employee</option>
+              <option value="admin">admin</option>
+            </select>
+          </label>
+          <label>
+            Prenom
+            <input name="firstName" placeholder="Prenom" required />
+          </label>
+          <label>
+            Nom
+            <input name="lastName" placeholder="Nom" required />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" placeholder="Email" autocomplete="username" required />
+          </label>
+          <label>
+            Telephone
+            <input name="phone" placeholder="Telephone" />
+          </label>
+          <label>
+            Adresse
+            <input name="address" placeholder="Adresse" />
+          </label>
+          <label>
+            Actif
+            <select name="isActive">
+              <option value="1">oui</option>
+              <option value="0">non</option>
+            </select>
+          </label>
+          <label>
+            Mot de passe
+            <input name="password" type="password" placeholder="Obligatoire en creation, optionnel en modification" autocomplete="new-password" />
+          </label>
+          <div class="staff-modal-actions">
+            <button type="submit" id="staff-modal-submit-btn">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="staff-delete-modal" class="modal" hidden aria-labelledby="staff-delete-title">
+      <div class="modal__backdrop" data-close-delete-modal></div>
+      <div class="modal__dialog staff-delete-dialog">
+        <button type="button" class="modal__close" id="close-delete-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Suppression</p>
+        <h3 class="modal__title" id="staff-delete-title">Supprimer ce compte interne ?</h3>
+        <p class="modal__meta" id="staff-delete-message"></p>
+        <div class="staff-delete-actions">
+          <button id="cancel-delete-btn" type="button" class="staff-delete-cancel">Annuler</button>
+          <button id="confirm-delete-btn" type="button" class="staff-delete-confirm">Supprimer</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu-form-modal" class="modal" hidden aria-labelledby="menu-form-title">
+      <div class="modal__backdrop" data-close-menu-modal></div>
+      <div class="modal__dialog">
+        <button type="button" class="modal__close" id="close-menu-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Gestion menus</p>
+        <h3 class="modal__title" id="menu-form-title">Menu</h3>
+        <p class="modal__meta" id="menu-form-subtitle">Saisis les informations du menu.</p>
+        <form id="menu-modal-form" class="staff-modal-form">
+          <input type="hidden" name="menuId" />
+          <label>Titre<input name="title" placeholder="Titre" required /></label>
+          <label>Description<input name="description" placeholder="Description" required /></label>
+          <label>Theme<input name="theme" placeholder="Theme" required /></label>
+          <label>Regime<input name="diet" placeholder="Regime" required /></label>
+          <label>Min personnes<input name="minPeople" type="number" placeholder="Min personnes" required /></label>
+          <label>Prix minimum<input name="minPrice" type="number" step="0.01" placeholder="Prix minimum" required /></label>
+          <label>Stock<input name="stock" type="number" placeholder="Stock" required /></label>
+          <div class="menu-modal-full menu-image-picker">
+            <p class="menu-image-title">Photo du menu</p>
+            <div id="menu-image-presets" class="menu-image-presets"></div>
+            <div class="menu-image-custom-row">
+              <input id="menu-image-file-input" type="file" accept="image/*" hidden />
+              <button id="menu-image-file-btn" type="button">Ajouter un fichier</button>
+              <span class="menu-image-upload-info">Image locale (jpg, png, webp)</span>
+            </div>
+            <input type="hidden" name="imageUrl" />
+          </div>
+          <label class="menu-modal-full">Conditions<input name="conditionsText" placeholder="Conditions" required /></label>
+          <div class="staff-modal-actions">
+            <button type="submit" id="menu-modal-submit-btn">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="menu-delete-modal" class="modal" hidden aria-labelledby="menu-delete-title">
+      <div class="modal__backdrop" data-close-menu-delete-modal></div>
+      <div class="modal__dialog staff-delete-dialog">
+        <button type="button" class="modal__close" id="close-menu-delete-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Suppression</p>
+        <h3 class="modal__title" id="menu-delete-title">Supprimer ce menu ?</h3>
+        <p class="modal__meta" id="menu-delete-message"></p>
+        <div class="staff-delete-actions">
+          <button id="cancel-menu-delete-btn" type="button" class="staff-delete-cancel">Annuler</button>
+          <button id="confirm-menu-delete-btn" type="button" class="staff-delete-confirm">Supprimer</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="client-details-modal" class="modal" hidden aria-labelledby="client-details-title">
+      <div class="modal__backdrop" data-close-client-modal></div>
+      <div class="modal__dialog">
+        <button type="button" class="modal__close" id="close-client-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Client</p>
+        <h3 class="modal__title" id="client-details-title">Details client</h3>
+        <p class="modal__meta" id="client-details-meta"></p>
+        <div class="grid-2">
+          <div class="form-card">
+            <h3>Menus recemment commandes</h3>
+            <ul id="client-recent-menus" class="modal__dishes"></ul>
+          </div>
+          <div class="form-card">
+            <h3>Menus favoris</h3>
+            <ul id="client-favorite-menus" class="modal__dishes"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="client-edit-modal" class="modal" hidden aria-labelledby="client-edit-title">
+      <div class="modal__backdrop" data-close-client-edit-modal></div>
+      <div class="modal__dialog">
+        <button type="button" class="modal__close" id="close-client-edit-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Client</p>
+        <h3 class="modal__title" id="client-edit-title">Modifier un client</h3>
+        <p class="modal__meta">Mets a jour les informations du client.</p>
+        <form id="client-edit-form" class="staff-modal-form">
+          <input type="hidden" name="clientId" />
+          <label>Prenom<input name="firstName" required /></label>
+          <label>Nom<input name="lastName" required /></label>
+          <label>Email<input name="email" type="email" autocomplete="username" required /></label>
+          <label>Telephone<input name="phone" /></label>
+          <label class="menu-modal-full">Adresse<input name="address" /></label>
+          <div class="staff-modal-actions">
+            <button type="submit">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="order-status-modal" class="modal" hidden aria-labelledby="order-status-title">
+      <div class="modal__backdrop" data-close-order-modal></div>
+      <div class="modal__dialog">
+        <button type="button" class="modal__close" id="close-order-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Commande</p>
+        <h3 class="modal__title" id="order-status-title">Modifier le statut</h3>
+        <p class="modal__meta" id="order-status-subtitle"></p>
+        <form id="order-status-form" class="staff-modal-form">
+          <input type="hidden" name="orderId" />
+          <label>
+            Nouveau statut
+            <select name="status" required>
+              <option value="accepted">Acceptee</option>
+              <option value="preparing">En preparation</option>
+              <option value="delivering">En livraison</option>
+              <option value="delivered">Livree</option>
+              <option value="awaiting_material_return">Retour materiel</option>
+              <option value="finished">Terminee</option>
+              <option value="cancelled">Annulee</option>
+            </select>
+          </label>
+          <label class="menu-modal-full">
+            Motif (si annulation)
+            <input name="reason" placeholder="Motif (si annulation)" />
+          </label>
+          <label class="menu-modal-full">
+            Mode de contact client (si annulation)
+            <select name="contactMode">
+              <option value="">Selectionnez un mode de contact</option>
+              <option value="gsm">Appel GSM</option>
+              <option value="mail">Email</option>
+            </select>
+          </label>
+          <div class="staff-modal-actions">
+            <button type="submit">Mettre a jour</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p class="footer-hours">Horaires d'ouverture: lundi au dimanche, 08:00 - 20:00</p>
+        <p class="footer-meta">Mentions legales | Conditions generales de vente</p>
+      </div>
+    </footer>
+
+    <script src="./staff.js?v=20260218-15" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Maquettes Vite & Gourmand</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; color: #231912; background: #f5efe8; }
+    h1, h2 { margin: 0 0 10px; }
+    .section { margin-bottom: 28px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 16px; }
+    .card { background: #fffdf9; border: 1px solid #eadccf; border-radius: 14px; padding: 12px; }
+    .mockup { background: linear-gradient(180deg, #fff7ef 0%, #fffdf9 100%); }
+    .title { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .frame-desktop { height: 180px; border: 2px dashed #9d9d9d; border-radius: 10px; padding: 8px; background: #fafafa; }
+    .frame-mobile { width: 140px; height: 220px; margin: 0 auto; border: 2px dashed #9d9d9d; border-radius: 20px; padding: 8px; background: #fafafa; }
+    .hero { height: 22px; background: #ddd; border-radius: 5px; margin-bottom: 8px; }
+    .line { height: 14px; background: #e7e7e7; border-radius: 4px; margin-bottom: 6px; }
+    .line.small { width: 60%; }
+    .line.mid { width: 78%; }
+    .btn { height: 18px; width: 90px; background: #bbb; border-radius: 999px; margin-top: 6px; }
+    .mockup .hero { background: linear-gradient(90deg, #ffdcb2, #ffb277); }
+    .mockup .line { background: #f0e2d5; }
+    .mockup .btn { background: #b84a2f; }
+    @media print { body { margin: 10mm; background: #fff; } }
+  </style>
+</head>
+<body>
+  <h1>Maquettes - Vite & Gourmand</h1>
+  <p>3 ecrans desktop + 3 ecrans mobile, avec version wireframe et version mockup.</p>
+
+  <div class="section">
+    <h2>Wireframes Desktop</h2>
+    <div class="grid">
+      <div class="card"><div class="title">D1 Auth</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line mid"></div><div class="line"></div><div class="btn"></div></div></div>
+      <div class="card"><div class="title">D2 Catalogue</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line small"></div><div class="btn"></div></div></div>
+      <div class="card"><div class="title">D3 Back-office</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Wireframes Mobile</h2>
+    <div class="grid">
+      <div class="card"><div class="title">M1 Auth</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+      <div class="card"><div class="title">M2 Catalogue</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+      <div class="card"><div class="title">M3 Suivi</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Mockups Desktop</h2>
+    <div class="grid">
+      <div class="card mockup"><div class="title">D1 Auth</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line mid"></div><div class="line"></div><div class="btn"></div></div></div>
+      <div class="card mockup"><div class="title">D2 Catalogue</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line small"></div><div class="btn"></div></div></div>
+      <div class="card mockup"><div class="title">D3 Back-office</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Mockups Mobile</h2>
+    <div class="grid">
+      <div class="card mockup"><div class="title">M1 Auth</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+      <div class="card mockup"><div class="title">M2 Catalogue</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+      <div class="card mockup"><div class="title">M3 Suivi</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite & Gourmand - Espace Client</title>
+    <link rel="stylesheet" href="./styles.css?v=20260217-25" />
+  </head>
+  <body class="client-page">
+    <header class="hero client-hero">
+      <div class="hero-content container">
+        <p class="eyebrow">Espace Client</p>
+        <h1>Collection Traiteur Signature</h1>
+        <p class="hero-subtitle">Choisissez un menu signature, adaptez-le a votre evenement et suivez vos commandes en toute simplicite.</p>
+        <div class="hero-chips">
+          <span id="client-user-chip">Client connecte</span>
+          <button id="logout-btn" type="button">Deconnexion</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="container client-signature-strip">
+      <article class="client-signature-card">
+        <h3>Experience premium</h3>
+        <p>Menus haut de gamme, presentation soignee, accompagnement de bout en bout.</p>
+      </article>
+      <article class="client-signature-card">
+        <h3>Organisation simplifiee</h3>
+        <p>Filtrez rapidement, choisissez votre menu, puis validez votre commande en quelques clics.</p>
+      </article>
+      <article class="client-signature-card">
+        <h3>Suivi transparent</h3>
+        <p>Visualisez l avancement de vos commandes et gardez une vue claire sur chaque prestation.</p>
+      </article>
+    </section>
+
+    <main class="container client-layout">
+      <section class="panel client-filter-panel">
+        <div class="section-head">
+          <h2>Trouver mon menu</h2>
+          <p class="small">Ajustez rapidement les criteres pour afficher les menus qui vous correspondent.</p>
+        </div>
+        <form id="client-filters-form" class="client-filters-form" role="group" aria-label="Filtres menus client" autocomplete="off">
+          <div class="client-filter-surface">
+            <p class="client-filter-title">Affinage rapide</p>
+            <div class="client-filter-grid">
+              <label class="client-filter-field">
+                Theme
+                <select id="f-theme">
+                  <option value="">Tous</option>
+                  <option value="Noel">Noel</option>
+                  <option value="Paques">Paques</option>
+                  <option value="Classique">Classique</option>
+                  <option value="Evenement">Evenement</option>
+                </select>
+              </label>
+              <label class="client-filter-field">
+                Regime
+                <select id="f-diet">
+                  <option value="">Tous</option>
+                  <option value="classique">Classique</option>
+                  <option value="vegetarien">Vegetarien</option>
+                  <option value="vegan">Vegan</option>
+                </select>
+              </label>
+              <label class="client-filter-field">
+                Personnes minimum
+                <input id="f-min-people" type="number" placeholder="ex: 6" />
+              </label>
+              <label class="client-filter-field">
+                Budget max (EUR)
+                <input id="f-max-price" type="number" placeholder="ex: 250" />
+              </label>
+            </div>
+          </div>
+          <div class="client-filter-surface">
+            <p class="client-filter-title">Fourchette de prix</p>
+            <div class="client-filter-row">
+              <label class="client-filter-field">
+                Prix mini
+                <input id="f-min-price" type="number" placeholder="ex: 120" />
+              </label>
+              <label class="client-filter-field">
+                Prix maxi
+                <input id="f-max-range-price" type="number" placeholder="ex: 300" />
+              </label>
+            </div>
+          </div>
+          <div class="client-filter-actions">
+            <button id="reset-filters" class="filter-reset-btn" type="button">Reinitialiser les filtres</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="client-content-grid">
+        <section class="panel">
+          <div class="section-head">
+            <h2>Catalogue des Menus</h2>
+            <p class="small">Choisissez un menu puis cliquez sur "Commander ce menu" pour ouvrir la fenetre de commande.</p>
+          </div>
+          <div id="client-menus" class="client-menu-list"></div>
+        </section>
+
+        <section class="panel sticky-card client-orders-panel">
+          <div class="section-head">
+            <h2>Mes commandes</h2>
+            <p class="small">Suivi de vos commandes recentes.</p>
+          </div>
+          <div id="my-orders" class="employee-orders-list"></div>
+        </section>
+      </section>
+
+      <section class="panel client-reviews-panel">
+        <div class="section-head">
+          <h2>Avis clients</h2>
+          <p class="small">Partagez votre retour sur une commande terminee.</p>
+        </div>
+        <div class="client-reviews-grid">
+          <form id="review-form" class="client-review-form">
+            <label>
+              Commande terminee
+              <select id="review-order-id" name="orderId" required>
+                <option value="">Selectionnez une commande</option>
+              </select>
+            </label>
+            <label>
+              Note
+              <select id="review-rating" name="rating" required>
+                <option value="">Selectionnez une note</option>
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Tres bien</option>
+                <option value="3">3 - Bien</option>
+                <option value="2">2 - Moyen</option>
+                <option value="1">1 - A ameliorer</option>
+              </select>
+            </label>
+            <label>
+              Commentaire
+              <textarea id="review-comment" name="comment" rows="4" placeholder="Votre avis sur la prestation..." required></textarea>
+            </label>
+            <button type="submit">Envoyer mon avis</button>
+            <p id="review-status" class="status-line small"></p>
+          </form>
+
+          <div class="client-review-list-wrap">
+            <h3>Derniers avis publiés</h3>
+            <div id="public-reviews-list" class="client-review-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section id="client-order-modal" class="modal" hidden aria-labelledby="client-order-title">
+      <div class="modal__backdrop" data-close-client-order-modal></div>
+      <div class="modal__dialog client-order-modal-dialog">
+        <button type="button" class="modal__close" id="close-client-order-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Commande</p>
+        <h3 class="modal__title" id="client-order-title">Commander ce menu</h3>
+        <p class="modal__meta" id="client-order-subtitle">Renseignez les informations de livraison.</p>
+
+        <form id="order-form" class="client-order-form">
+          <label class="span-2">
+            Menu
+            <select name="menuId" required>
+              <option value="">Choisir un menu</option>
+            </select>
+          </label>
+          <label>
+            Nombre de personnes
+            <input name="peopleCount" type="number" placeholder="Nombre de personnes" required />
+          </label>
+          <label class="span-2">
+            Adresse de prestation
+            <input name="eventAddress" placeholder="Adresse prestation" autocomplete="street-address" required />
+          </label>
+          <label>
+            Ville
+            <input name="eventCity" placeholder="Ville prestation" autocomplete="address-level2" required />
+          </label>
+          <p class="small order-distance-note span-2">Distance de livraison calculee automatiquement depuis Bordeaux.</p>
+          <label>
+            Date
+            <input name="eventDate" type="date" required />
+          </label>
+          <label>
+            Heure de livraison
+            <input name="deliveryTime" type="time" required />
+          </label>
+          <label class="inline-check span-2">
+            <input name="materialLoaned" type="checkbox" />
+            Matériel prêté pour l événement
+          </label>
+          <div class="span-2">
+            <button type="submit">Valider la commande</button>
+          </div>
+        </form>
+
+        <p id="order-estimate" class="status-line small">Estimation: selectionnez un menu puis renseignez le nombre de personnes.</p>
+        <p id="order-result" class="status-line small"></p>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p class="footer-hours">Horaires d'ouverture: lundi au dimanche, 08:00 - 20:00</p>
+        <p class="footer-meta">Mentions legales | Conditions generales de vente</p>
+      </div>
+    </footer>
+
+    <script src="./client.js?v=20260218-28" type="module"></script>
+  </body>
+</html>

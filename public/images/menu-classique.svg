@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7a4a28"/>
+      <stop offset="100%" stop-color="#d4b18b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="1030" cy="170" r="170" fill="#ffffff2c"/>
+  <circle cx="1060" cy="630" r="210" fill="#ffffff1f"/>
+  <rect x="70" y="110" width="640" height="580" rx="30" fill="#2a1a12a5"/>
+  <text x="115" y="230" fill="#f9ece0" font-size="78" font-family="Georgia, serif" font-weight="700">Menu Classique</text>
+  <text x="115" y="300" fill="#f2dac2" font-size="34" font-family="Arial, sans-serif">Entree, plat, dessert pour toutes occasions</text>
+  <text x="115" y="360" fill="#f2dac2" font-size="30" font-family="Arial, sans-serif">Cuisine traditionnelle et raffinee</text>
+  <g transform="translate(850 360)">
+    <circle cx="0" cy="0" r="154" fill="#fff5ea"/>
+    <circle cx="0" cy="0" r="122" fill="#ead0b3"/>
+    <ellipse cx="-34" cy="-16" rx="34" ry="20" fill="#aa5f42"/>
+    <ellipse cx="26" cy="20" rx="30" ry="18" fill="#8c3f2e"/>
+    <ellipse cx="50" cy="-24" rx="20" ry="14" fill="#d8a35f"/>
+  </g>
+</svg>

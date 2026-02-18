@@ -1,0 +1,113 @@
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  role ENUM('user','employee','admin') NOT NULL,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  phone VARCHAR(64) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  address VARCHAR(512) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS menus (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  theme VARCHAR(255) NOT NULL,
+  diet VARCHAR(255) NOT NULL,
+  min_people INT NOT NULL,
+  min_price DECIMAL(10,2) NOT NULL,
+  conditions_text TEXT NOT NULL,
+  stock INT NOT NULL,
+  image_url TEXT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK (min_people > 0),
+  CHECK (min_price >= 0),
+  CHECK (stock >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS dishes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  course_type ENUM('starter','main','dessert') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS allergens (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS dish_allergens (
+  dish_id INT NOT NULL,
+  allergen_id INT NOT NULL,
+  PRIMARY KEY (dish_id, allergen_id),
+  CONSTRAINT fk_dish_allergens_dish FOREIGN KEY (dish_id) REFERENCES dishes(id) ON DELETE CASCADE,
+  CONSTRAINT fk_dish_allergens_allergen FOREIGN KEY (allergen_id) REFERENCES allergens(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS menu_dishes (
+  menu_id INT NOT NULL,
+  dish_id INT NOT NULL,
+  PRIMARY KEY (menu_id, dish_id),
+  CONSTRAINT fk_menu_dishes_menu FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE,
+  CONSTRAINT fk_menu_dishes_dish FOREIGN KEY (dish_id) REFERENCES dishes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  menu_id INT NOT NULL,
+  people_count INT NOT NULL,
+  event_address VARCHAR(512) NOT NULL,
+  event_city VARCHAR(255) NOT NULL,
+  event_date DATE NOT NULL,
+  delivery_time TIME NOT NULL,
+  distance_km DECIMAL(10,2) NOT NULL DEFAULT 0,
+  menu_price DECIMAL(10,2) NOT NULL,
+  delivery_price DECIMAL(10,2) NOT NULL,
+  total_price DECIMAL(10,2) NOT NULL,
+  status VARCHAR(64) NOT NULL,
+  material_loaned TINYINT(1) NOT NULL DEFAULT 0,
+  cancel_reason TEXT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT fk_orders_menu FOREIGN KEY (menu_id) REFERENCES menus(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS order_status_history (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  status VARCHAR(64) NOT NULL,
+  changed_by_user_id INT NULL,
+  changed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_history_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  CONSTRAINT fk_history_user FOREIGN KEY (changed_by_user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL UNIQUE,
+  user_id INT NOT NULL,
+  rating INT NOT NULL,
+  comment TEXT NOT NULL,
+  is_approved TINYINT(1) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_reviews_order FOREIGN KEY (order_id) REFERENCES orders(id),
+  CONSTRAINT fk_reviews_user FOREIGN KEY (user_id) REFERENCES users(id),
+  CHECK (rating BETWEEN 1 AND 5)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS contacts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

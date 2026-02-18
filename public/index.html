@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite & Gourmand - Connexion</title>
+    <link rel="stylesheet" href="./styles.css?v=20260217-19" />
+  </head>
+  <body class="auth-page">
+    <header class="hero">
+      <div class="hero-content container">
+        <p class="eyebrow">Traiteur Evenementiel - Bordeaux</p>
+        <h1>Vite & Gourmand</h1>
+      </div>
+    </header>
+
+    <main class="container page-grid">
+      <section class="panel" aria-labelledby="auth-title">
+        <div class="section-head">
+          <h2 id="auth-title">Acces a l'application</h2>
+        </div>
+
+        <div class="auth-unified">
+          <div class="auth-mode-switch" role="tablist" aria-label="Mode authentification">
+            <button id="mode-login" type="button" class="auth-mode-btn is-active" data-auth-mode="login" aria-selected="true">Se connecter</button>
+            <button id="mode-register" type="button" class="auth-mode-btn" data-auth-mode="register" aria-selected="false">Creer un compte</button>
+          </div>
+
+          <form id="login-form" class="form-card auth-unified-card" data-auth-form="login">
+            <h4>Connexion</h4>
+            <label for="login-email">Email</label>
+            <input id="login-email" name="email" type="email" autocomplete="username" placeholder="votre@email.com" required />
+            <label for="login-password">Mot de passe</label>
+            <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required />
+            <button type="submit">Se connecter</button>
+          </form>
+
+          <form id="register-form" class="form-card auth-unified-card" data-auth-form="register" hidden>
+            <h4>Creation de compte client</h4>
+            <label for="register-first-name">Prenom</label>
+            <input id="register-first-name" name="firstName" autocomplete="given-name" placeholder="Prenom" required />
+            <label for="register-last-name">Nom</label>
+            <input id="register-last-name" name="lastName" autocomplete="family-name" placeholder="Nom" required />
+            <label for="register-phone">Telephone</label>
+            <input id="register-phone" name="phone" autocomplete="tel" placeholder="GSM" required />
+            <label for="register-email">Email</label>
+            <input id="register-email" name="email" type="email" autocomplete="email" placeholder="Adresse mail" required />
+            <label for="register-address">Adresse postale</label>
+            <input id="register-address" name="address" autocomplete="street-address" placeholder="Adresse postale" required />
+            <label for="register-password">Mot de passe securise</label>
+            <input id="register-password" name="password" type="password" autocomplete="new-password" placeholder="10 caracteres min / maj / min / chiffre / special" required />
+            <button type="submit">Creer mon compte client</button>
+          </form>
+        </div>
+
+        <p id="auth-status" class="status-line small"></p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p class="footer-hours">Horaires d'ouverture: lundi au dimanche, 08:00 - 20:00</p>
+        <p class="footer-meta">Mentions legales | Conditions generales de vente</p>
+      </div>
+    </footer>
+
+    <script src="./auth.js?v=20260217-auth-1" type="module"></script>
+  </body>
+</html>
