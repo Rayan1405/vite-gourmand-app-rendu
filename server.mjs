@@ -24,6 +24,7 @@ const SMTP_USER = process.env.SMTP_USER || '';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const MAIL_FROM = process.env.MAIL_FROM || SMTP_USER || 'no-reply@vitegourmand.fr';
 const MAIL_TO = process.env.MAIL_TO || 'contact@vitegourmand.fr';
+const SMTP_FORCE_IPV4 = String(process.env.SMTP_FORCE_IPV4 || (process.env.RENDER ? 'true' : 'false')) === 'true';
 const DB_HOST = process.env.DB_HOST || '';
 const DB_PORT = Number(process.env.DB_PORT || 3306);
 const DB_NAME = process.env.DB_NAME || '';
@@ -1395,7 +1396,8 @@ async function start() {
     secure: SMTP_SECURE,
     user: SMTP_USER,
     pass: SMTP_PASS,
-    from: MAIL_FROM
+    from: MAIL_FROM,
+    forceIpv4: SMTP_FORCE_IPV4
   });
 
   try {

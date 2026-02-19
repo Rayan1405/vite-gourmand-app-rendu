@@ -1,7 +1,48 @@
 import nodemailer from 'nodemailer';
+import net from 'node:net';
+import tls from 'node:tls';
+import { Resolver } from 'node:dns';
 
 let transporter = null;
 let fromAddress = 'no-reply@vitegourmand.fr';
+
+function createIpv4SocketProvider() {
+  return (options, callback) => {
+    if (!options?.host) {
+      callback(null);
+      return;
+    }
+
+    const resolver = new Resolver();
+    resolver.resolve4(options.host, (error, addresses) => {
+      if (error || !Array.isArray(addresses) || addresses.length === 0) {
+        callback(null);
+        return;
+      }
+
+      const ip = addresses[0];
+      const connectOptions = {
+        ...options,
+        host: ip,
+        family: 4
+      };
+
+      if (options.secure) {
+        connectOptions.servername = options.servername || options.host;
+      }
+
+      try {
+        const connection = options.secure ? tls.connect(connectOptions) : net.connect(connectOptions);
+        callback(null, {
+          connection,
+          secured: Boolean(options.secure)
+        });
+      } catch {
+        callback(null);
+      }
+    });
+  };
+}
 
 function escapeHtml(value = '') {
   return String(value)
@@ -24,19 +65,25 @@ function layout(title, intro, contentHtml) {
   `;
 }
 
-export function initMailer({ host, port, secure, user, pass, from }) {
+export function initMailer({ host, port, secure, user, pass, from, forceIpv4 = false }) {
   if (!host || !user || !pass) {
     console.warn('SMTP non configure. Aucun email reel ne sera envoye.');
     return null;
   }
 
   fromAddress = from || user;
-  transporter = nodemailer.createTransport({
+  const transportOptions = {
     host,
     port,
     secure,
     auth: { user, pass }
-  });
+  };
+
+  if (forceIpv4) {
+    transportOptions.getSocket = createIpv4SocketProvider();
+  }
+
+  transporter = nodemailer.createTransport(transportOptions);
 
   return transporter;
 }
