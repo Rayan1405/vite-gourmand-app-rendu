@@ -1400,21 +1400,23 @@ async function start() {
     forceIpv4: SMTP_FORCE_IPV4
   });
 
-  try {
-    const smtpOk = await verifyMailer();
-    if (smtpOk) {
-      console.log('SMTP connecte: les emails reels sont actifs.');
-    }
-  } catch (error) {
-    if (SMTP_HOST && SMTP_USER) {
-      console.error('SMTP configure mais inaccessible:', error.message);
-    }
-  }
-
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`Application Vite & Gourmand en cours sur http://localhost:${PORT}`);
     console.log('Comptes demo: admin@vitegourmand.fr / Admin!12345, employee@vitegourmand.fr / Employe!12345, user@vitegourmand.fr / User!123456');
   });
+
+  (async () => {
+    try {
+      const smtpOk = await verifyMailer();
+      if (smtpOk) {
+        console.log('SMTP connecte: les emails reels sont actifs.');
+      }
+    } catch (error) {
+      if (SMTP_HOST && SMTP_USER) {
+        console.error('SMTP configure mais inaccessible:', error.message);
+      }
+    }
+  })();
 
   startMongoInBackground();
 }
