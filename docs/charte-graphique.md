@@ -53,9 +53,3 @@ Tailles usuelles:
 
 - Espace client: focalise experience, commande et avis.
 - Espace employe/admin: focalise operationnel (kanban, tableaux, moderation).
-
-## Export PDF
-
-1. Ouvrir ce fichier dans VS Code (Preview Markdown).
-2. Imprimer en `Save as PDF`.
-3. Nom conseille: `01-charte-graphique.pdf`.

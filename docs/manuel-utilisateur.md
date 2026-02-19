@@ -75,7 +75,4 @@ Fonctions supplementaires admin:
 - Si mail non envoye: verifier variables SMTP
 - Si Mongo indisponible: l application fonctionne, seules stats NoSQL sont coupees
 
-## 8) Export PDF
 
-Exporter ce fichier en PDF sous le nom:
-- `04-manuel-utilisateur.pdf`
