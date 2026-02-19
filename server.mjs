@@ -254,6 +254,20 @@ async function logOrderAnalytics(order) {
   }
 }
 
+function sendMailInBackground(to, payload, context = '') {
+  Promise.resolve(sendMail(to, payload))
+    .then((ok) => {
+      if (!ok) {
+        const suffix = context ? ` (${context})` : '';
+        console.warn(`Email non envoye${suffix} -> ${to}`);
+      }
+    })
+    .catch((error) => {
+      const suffix = context ? ` (${context})` : '';
+      console.error(`Erreur envoi email${suffix}:`, error.message);
+    });
+}
+
 async function getOrdersPerMenuStats() {
   if (!mongoAnalyticsCollection) return [];
   return mongoAnalyticsCollection.aggregate([
@@ -762,7 +776,7 @@ const server = createServer(async (req, res) => {
           createdAt: new Date().toISOString()
         });
 
-        await sendMail(user.email, orderConfirmationMail({
+        sendMailInBackground(user.email, orderConfirmationMail({
           orderId,
           menuTitle: menu.title,
           totalPrice,
@@ -770,7 +784,7 @@ const server = createServer(async (req, res) => {
           menuPrice,
           eventDate: body.eventDate,
           deliveryTime: body.deliveryTime
-        }));
+        }), 'confirmation commande');
         return json(res, 201, { orderId, menuPrice, deliveryPrice, totalPrice, status: 'pending', message: 'Commande validee. Un email de confirmation a ete envoye.' });
       }
 
@@ -866,11 +880,11 @@ const server = createServer(async (req, res) => {
 
           const orderOwner = await get('SELECT email FROM users WHERE id = ?', order.user_id);
           if (nextStatus === 'awaiting_material_return') {
-            await sendMail(orderOwner.email, materialReturnMail(orderId));
+            sendMailInBackground(orderOwner.email, materialReturnMail(orderId), 'retour materiel');
           } else if (nextStatus === 'finished') {
-            await sendMail(orderOwner.email, orderStatusMail('finished - vous pouvez maintenant laisser un avis', orderId));
+            sendMailInBackground(orderOwner.email, orderStatusMail('finished - vous pouvez maintenant laisser un avis', orderId), 'statut termine');
           } else {
-            await sendMail(orderOwner.email, orderStatusMail(nextStatus, orderId));
+            sendMailInBackground(orderOwner.email, orderStatusMail(nextStatus, orderId), 'statut commande');
           }
 
           return json(res, 200, { message: 'Statut mis a jour et email envoye au client.' });
