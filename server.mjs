@@ -1127,26 +1127,6 @@ const server = createServer(async (req, res) => {
         }
       }
 
-      if (req.method === 'POST' && url.pathname === '/api/admin/employees') {
-        if (!requireRole(user, ['admin'])) return json(res, 403, { error: 'Acces refuse' });
-        const body = await parseBody(req);
-        if (!body.email || !body.password) return json(res, 400, { error: 'Email et mot de passe requis' });
-        if (!validatePassword(body.password)) return json(res, 400, { error: 'Mot de passe non conforme' });
-
-        try {
-          const result = await run(
-            `INSERT INTO users (role, first_name, last_name, phone, email, address, password_hash)
-             VALUES ('employee', 'Employe', 'Nouveau', '0000000000', ?, 'Bordeaux', ?)`,
-            body.email.toLowerCase(),
-            hashPassword(body.password)
-          );
-          await sendMail(body.email.toLowerCase(), employeeCreatedMail());
-          return json(res, 201, { employeeId: Number(result.lastInsertRowid), message: 'Employe cree. Un email de notification a ete envoye.' });
-        } catch {
-          return json(res, 409, { error: 'Email deja utilise' });
-        }
-      }
-
       if (req.method === 'GET' && url.pathname === '/api/admin/staff-users') {
         if (!requireRole(user, ['admin'])) return json(res, 403, { error: 'Acces refuse' });
         const rows = await all(
@@ -1301,13 +1281,6 @@ const server = createServer(async (req, res) => {
         } catch {
           return json(res, 400, { error: 'Suppression impossible (compte lie a des donnees)' });
         }
-      }
-
-      const disableEmployeeMatch = url.pathname.match(/^\/api\/admin\/employees\/(\d+)\/disable$/);
-      if (req.method === 'PATCH' && disableEmployeeMatch) {
-        if (!requireRole(user, ['admin'])) return json(res, 403, { error: 'Acces refuse' });
-        await run('UPDATE users SET is_active = 0 WHERE id = ? AND role = ?', Number(disableEmployeeMatch[1]), 'employee');
-        return json(res, 200, { message: 'Compte employe desactive' });
       }
 
       if (req.method === 'GET' && url.pathname === '/api/admin/stats/orders-per-menu') {

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite & Gourmand - Espace Client</title>
-    <link rel="stylesheet" href="./styles.css?v=20260217-25" />
+    <link rel="stylesheet" href="./styles.css?v=20260219-01" />
   </head>
   <body class="client-page">
     <header class="hero client-hero">
@@ -200,6 +200,18 @@
       </div>
     </section>
 
+    <section id="client-order-success-modal" class="modal" hidden aria-labelledby="client-order-success-title">
+      <div class="modal__backdrop" data-close-client-order-success-modal></div>
+      <div class="modal__dialog client-order-success-dialog">
+        <button type="button" class="modal__close" id="close-client-order-success-modal" aria-label="Fermer">×</button>
+        <p class="modal__kicker">Commande validee</p>
+        <h3 class="modal__title" id="client-order-success-title">Votre commande est bien prise en compte</h3>
+        <p class="modal__meta" id="client-order-success-message"></p>
+        <p class="small">Redirection vers l accueil client...</p>
+        <button id="client-order-success-home-btn" type="button">Retour a l accueil maintenant</button>
+      </div>
+    </section>
+
     <footer class="site-footer">
       <div class="container footer-content">
         <p class="footer-hours">Horaires d'ouverture: lundi au dimanche, 08:00 - 20:00</p>
@@ -207,6 +219,6 @@
       </div>
     </footer>
 
-    <script src="./client.js?v=20260218-28" type="module"></script>
+    <script src="./client.js?v=20260219-01" type="module"></script>
   </body>
 </html>

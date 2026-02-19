@@ -16,6 +16,11 @@ const orderModal = document.querySelector('#client-order-modal');
 const orderModalSubtitle = document.querySelector('#client-order-subtitle');
 const closeOrderModalBtn = document.querySelector('#close-client-order-modal');
 const closeOrderModalTargets = Array.from(document.querySelectorAll('[data-close-client-order-modal]'));
+const orderSuccessModal = document.querySelector('#client-order-success-modal');
+const orderSuccessMessage = document.querySelector('#client-order-success-message');
+const closeOrderSuccessModalBtn = document.querySelector('#close-client-order-success-modal');
+const closeOrderSuccessTargets = Array.from(document.querySelectorAll('[data-close-client-order-success-modal]'));
+const orderSuccessHomeBtn = document.querySelector('#client-order-success-home-btn');
 const signatureCards = Array.from(document.querySelectorAll('.client-signature-card'));
 const reviewForm = document.querySelector('#review-form');
 const reviewOrderSelect = document.querySelector('#review-order-id');
@@ -28,6 +33,8 @@ const baseThemeValues = new Set(
     .filter(Boolean)
 );
 let closeOrderModalTimer = null;
+let closeOrderSuccessModalTimer = null;
+let orderSuccessRedirectTimer = null;
 let orderEstimateRequestId = 0;
 let cityEstimateTimer = null;
 const deliveryEstimateCache = new Map();
@@ -572,6 +579,54 @@ function closeOrderModal() {
   }, 180);
 }
 
+function goToClientHome() {
+  window.location.href = '/client.html';
+}
+
+function openOrderSuccessModal(message) {
+  if (!orderSuccessModal) {
+    goToClientHome();
+    return;
+  }
+
+  if (closeOrderSuccessModalTimer) {
+    clearTimeout(closeOrderSuccessModalTimer);
+    closeOrderSuccessModalTimer = null;
+  }
+  if (orderSuccessRedirectTimer) {
+    clearTimeout(orderSuccessRedirectTimer);
+    orderSuccessRedirectTimer = null;
+  }
+
+  if (orderSuccessMessage) {
+    orderSuccessMessage.textContent = message || 'Commande enregistree avec succes.';
+  }
+
+  orderSuccessModal.hidden = false;
+  document.body.classList.add('modal-open');
+  requestAnimationFrame(() => orderSuccessModal.classList.add('is-visible'));
+
+  orderSuccessRedirectTimer = setTimeout(() => {
+    goToClientHome();
+  }, 1800);
+}
+
+function closeOrderSuccessModal({ redirect = false } = {}) {
+  if (!orderSuccessModal || orderSuccessModal.hidden) {
+    if (redirect) goToClientHome();
+    return;
+  }
+
+  orderSuccessModal.classList.remove('is-visible');
+
+  if (closeOrderSuccessModalTimer) clearTimeout(closeOrderSuccessModalTimer);
+  closeOrderSuccessModalTimer = setTimeout(() => {
+    orderSuccessModal.hidden = true;
+    document.body.classList.remove('modal-open');
+    if (redirect) goToClientHome();
+  }, 180);
+}
+
 function initSignatureCardsRotation() {
   if (signatureCards.length < 2) return;
 
@@ -784,15 +839,18 @@ orderForm?.addEventListener('submit', async (e) => {
       materialLoaned: !!e.target.querySelector('[name="materialLoaned"]').checked
     };
     const data = await api('/api/orders', { method: 'POST', body: JSON.stringify(body) });
+    const successText = `Commande #${data.orderId} validee - Total: ${formatEur(data.totalPrice)} (menu ${formatEur(data.menuPrice)} + livraison ${formatEur(data.deliveryPrice)})`;
     if (orderResult) {
-      orderResult.textContent = `Commande #${data.orderId} validee - Total: ${formatEur(data.totalPrice)} (menu ${formatEur(data.menuPrice)} + livraison ${formatEur(data.deliveryPrice)})`;
+      orderResult.textContent = successText;
     }
+    closeOrderModal();
+    openOrderSuccessModal(successText);
     e.target.reset();
     if (orderMenuSelect) orderMenuSelect.value = '';
     highlightSelectedMenuCard('');
     updateOrderModalSubtitle();
     updateOrderEstimate();
-    await Promise.all([loadDetailedMenus(), loadMyOrders()]);
+    Promise.all([loadDetailedMenus(), loadMyOrders()]).catch(() => {});
   } catch (err) {
     if (orderResult) orderResult.textContent = err.message;
   }
@@ -829,9 +887,15 @@ closeOrderModalBtn?.addEventListener('click', closeOrderModal);
 for (const target of closeOrderModalTargets) {
   target.addEventListener('click', closeOrderModal);
 }
+closeOrderSuccessModalBtn?.addEventListener('click', () => closeOrderSuccessModal({ redirect: true }));
+for (const target of closeOrderSuccessTargets) {
+  target.addEventListener('click', () => closeOrderSuccessModal({ redirect: true }));
+}
+orderSuccessHomeBtn?.addEventListener('click', () => closeOrderSuccessModal({ redirect: true }));
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !orderModal?.hidden) closeOrderModal();
+  if (event.key === 'Escape' && !orderSuccessModal?.hidden) closeOrderSuccessModal({ redirect: true });
 });
 
 document.querySelector('#logout-btn').addEventListener('click', logout);

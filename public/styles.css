@@ -2516,6 +2516,65 @@ button:hover {
   color: #5f4230;
 }
 
+#client-order-success-modal {
+  z-index: 1310;
+}
+
+#client-order-success-modal .modal__backdrop {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: rgba(20, 12, 7, 0.58);
+  backdrop-filter: blur(3px);
+}
+
+#client-order-success-modal .client-order-success-dialog {
+  width: min(540px, 92vw);
+  border-radius: 20px;
+  border: 1px solid #e5c8b0;
+  padding: 1.1rem 1rem;
+  background:
+    radial-gradient(360px 140px at 8% -10%, rgba(255, 229, 202, 0.42) 0%, transparent 70%),
+    linear-gradient(180deg, #fffdf9 0%, #fff6ec 100%);
+  transform: translateY(18px) scale(0.985);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  display: grid;
+  gap: 0.6rem;
+}
+
+#client-order-success-modal.is-visible .modal__backdrop {
+  opacity: 1;
+}
+
+#client-order-success-modal.is-visible .client-order-success-dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+#client-order-success-modal .modal__close {
+  background: #fff4e8;
+  color: #69442d;
+  border: 1px solid #e1c2a8;
+  box-shadow: none;
+}
+
+#client-order-success-modal .modal__close:hover {
+  background: #ffe9d3;
+}
+
+#client-order-success-message {
+  margin: 0;
+  background: #fff8ef;
+  border: 1px solid #e8d1b7;
+  border-radius: 12px;
+  padding: 0.7rem 0.8rem;
+  color: #5a402f;
+}
+
+#client-order-success-home-btn {
+  width: 100%;
+}
+
 .client-page .client-menu-card {
   border-radius: 18px;
   padding: 0.9rem;
