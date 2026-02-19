@@ -2,67 +2,557 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Maquettes Vite & Gourmand</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maquettes - Vite & Gourmand</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 24px; color: #231912; background: #f5efe8; }
-    h1, h2 { margin: 0 0 10px; }
-    .section { margin-bottom: 28px; }
-    .grid { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 16px; }
-    .card { background: #fffdf9; border: 1px solid #eadccf; border-radius: 14px; padding: 12px; }
-    .mockup { background: linear-gradient(180deg, #fff7ef 0%, #fffdf9 100%); }
-    .title { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    .frame-desktop { height: 180px; border: 2px dashed #9d9d9d; border-radius: 10px; padding: 8px; background: #fafafa; }
-    .frame-mobile { width: 140px; height: 220px; margin: 0 auto; border: 2px dashed #9d9d9d; border-radius: 20px; padding: 8px; background: #fafafa; }
-    .hero { height: 22px; background: #ddd; border-radius: 5px; margin-bottom: 8px; }
-    .line { height: 14px; background: #e7e7e7; border-radius: 4px; margin-bottom: 6px; }
-    .line.small { width: 60%; }
-    .line.mid { width: 78%; }
-    .btn { height: 18px; width: 90px; background: #bbb; border-radius: 999px; margin-top: 6px; }
-    .mockup .hero { background: linear-gradient(90deg, #ffdcb2, #ffb277); }
-    .mockup .line { background: #f0e2d5; }
-    .mockup .btn { background: #b84a2f; }
-    @media print { body { margin: 10mm; background: #fff; } }
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap');
+
+    :root {
+      --ink: #231912;
+      --muted: #68584d;
+      --paper: #fffaf4;
+      --panel: #fffefc;
+      --line: #ead9c7;
+      --line-soft: #f2e5d8;
+      --sand: #f5ecdf;
+      --peach: #ffd4ab;
+      --orange: #cf673a;
+      --orange-strong: #a84524;
+      --sage: #dbe7d0;
+      --shadow: 0 18px 40px rgba(73, 40, 20, 0.12);
+      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(1300px 700px at -10% -10%, #ffe8cd 0%, transparent 58%),
+        radial-gradient(900px 480px at 110% -6%, #ffd9b8 0%, transparent 50%),
+        linear-gradient(180deg, #f8efe4 0%, #f3e7da 40%, #f7efe7 100%);
+      color: var(--ink);
+      font-family: 'Manrope', 'Segoe UI', sans-serif;
+    }
+
+    .page {
+      width: min(1280px, 94vw);
+      margin: 32px auto 64px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .cover {
+      background: linear-gradient(140deg, #ffd7b4 0%, #ffb979 44%, #ff995f 100%);
+      border: 1px solid #f0a56d;
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before,
+    .cover::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 245, 232, 0.52);
+      pointer-events: none;
+    }
+
+    .cover::before {
+      width: 280px;
+      height: 280px;
+      top: -100px;
+      right: -90px;
+    }
+
+    .cover::after {
+      width: 220px;
+      height: 220px;
+      left: -100px;
+      bottom: -110px;
+      background: rgba(255, 255, 255, 0.34);
+    }
+
+    .eyebrow {
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      font-weight: 700;
+      color: #6d381f;
+    }
+
+    h1 {
+      margin: 8px 0 8px;
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(34px, 4.2vw, 52px);
+      line-height: 1.05;
+      color: #26170f;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 800px;
+      color: #402719;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 12px 28px rgba(73, 40, 20, 0.08);
+      padding: 20px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+
+    .section p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid-3 {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .frame {
+      background: linear-gradient(180deg, #fffefb 0%, #fff7ef 100%);
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius-lg);
+      min-height: 280px;
+      overflow: hidden;
+    }
+
+    .frame header {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 1px solid #f1e1d0;
+      background: linear-gradient(130deg, #ffe1c4 0%, #ffd0a2 100%);
+      font-size: 12px;
+      font-weight: 700;
+      color: #6b3b22;
+    }
+
+    .frame .body {
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .wire {
+      background: #ececec;
+      border-radius: 8px;
+    }
+
+    .w-100 { width: 100%; }
+    .w-85 { width: 85%; }
+    .w-70 { width: 70%; }
+    .w-55 { width: 55%; }
+    .h-12 { height: 12px; }
+    .h-16 { height: 16px; }
+    .h-22 { height: 22px; }
+    .h-30 { height: 30px; }
+    .h-74 { height: 74px; }
+
+    .mobile-wrap {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mobile {
+      justify-self: center;
+      width: 210px;
+      height: 420px;
+      border-radius: 28px;
+      border: 8px solid #231912;
+      background: #fffef9;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mobile::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 8px;
+      width: 78px;
+      height: 12px;
+      border-radius: 999px;
+      background: #231912;
+      z-index: 2;
+    }
+
+    .mobile .screen {
+      position: absolute;
+      inset: 20px 0 0;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+      background: linear-gradient(180deg, #fffdf8 0%, #fff5ea 100%);
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid #e9ceb2;
+      background: #fff7ef;
+      color: #7e5235;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .mock {
+      background: linear-gradient(180deg, #fffaf4 0%, #fff3e5 100%);
+    }
+
+    .mock header {
+      background: linear-gradient(130deg, #ffc892 0%, #ff9f62 100%);
+      color: #2d190f;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      height: 22px;
+      border-radius: 999px;
+      background: #f5e5d6;
+      border: 1px solid #e6ccb2;
+      padding: 0 10px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #7b4e35;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .hero-card {
+      border: 1px solid #efcfb0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fff8ef 0%, #ffe9ce 100%);
+      height: 84px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      right: -12px;
+      top: -20px;
+      width: 88px;
+      height: 88px;
+      background: rgba(255, 188, 127, 0.42);
+      border-radius: 50%;
+    }
+
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .col {
+      border: 1px solid #edd4bd;
+      border-radius: 10px;
+      min-height: 118px;
+      background: #fff;
+      padding: 6px;
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .col-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: #6d3e25;
+      text-transform: uppercase;
+    }
+
+    .ticket {
+      border: 1px solid #f1cfb0;
+      border-radius: 8px;
+      background: #fff5e8;
+      height: 28px;
+    }
+
+    .btn {
+      height: 30px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, var(--orange) 0%, var(--orange-strong) 100%);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+    }
+
+    .legend {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .legend span {
+      font-size: 12px;
+      color: #6b594d;
+      border: 1px solid #ead9c8;
+      background: #fff7ef;
+      border-radius: 999px;
+      padding: 5px 10px;
+    }
+
+    @media (max-width: 1080px) {
+      .grid-3,
+      .mobile-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile {
+        width: 240px;
+      }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { margin: 0; width: 100%; }
+      .section, .cover { box-shadow: none; break-inside: avoid; }
+      .section { margin-bottom: 14px; }
+    }
   </style>
 </head>
 <body>
-  <h1>Maquettes - Vite & Gourmand</h1>
-  <p>3 ecrans desktop + 3 ecrans mobile, avec version wireframe et version mockup.</p>
+  <main class="page">
+    <section class="cover">
+      <p class="eyebrow">ECF - Maquettes produit</p>
+      <h1>Vite &amp; Gourmand - Wireframes et Mockups</h1>
+      <p class="lead">Cette planche reprend 3 ecrans desktop et 3 ecrans mobile, en wireframe puis en mockup, avec une direction visuelle proche du site final: palette chaude, cartes premium, boutons arrondis, blocs de commande et tableau de pilotage.</p>
+    </section>
 
-  <div class="section">
-    <h2>Wireframes Desktop</h2>
-    <div class="grid">
-      <div class="card"><div class="title">D1 Auth</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line mid"></div><div class="line"></div><div class="btn"></div></div></div>
-      <div class="card"><div class="title">D2 Catalogue</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line small"></div><div class="btn"></div></div></div>
-      <div class="card"><div class="title">D3 Back-office</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-    </div>
-  </div>
+    <section class="section">
+      <h2>Wireframes Desktop</h2>
+      <p>Structure fonctionnelle avant habillage visuel.</p>
+      <div class="grid-3">
+        <article class="frame">
+          <header><span>D1 - Connexion / Inscription</span><span class="tag">Wireframe</span></header>
+          <div class="body">
+            <div class="wire h-30 w-70"></div>
+            <div class="wire h-16 w-100"></div>
+            <div class="wire h-16 w-85"></div>
+            <div class="wire h-74 w-100"></div>
+            <div class="wire h-30 w-55"></div>
+          </div>
+        </article>
 
-  <div class="section">
-    <h2>Wireframes Mobile</h2>
-    <div class="grid">
-      <div class="card"><div class="title">M1 Auth</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-      <div class="card"><div class="title">M2 Catalogue</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-      <div class="card"><div class="title">M3 Suivi</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-    </div>
-  </div>
+        <article class="frame">
+          <header><span>D2 - Catalogue client</span><span class="tag">Wireframe</span></header>
+          <div class="body">
+            <div class="wire h-22 w-100"></div>
+            <div class="wire h-30 w-100"></div>
+            <div class="wire h-74 w-100"></div>
+            <div class="wire h-12 w-85"></div>
+            <div class="wire h-30 w-55"></div>
+          </div>
+        </article>
 
-  <div class="section">
-    <h2>Mockups Desktop</h2>
-    <div class="grid">
-      <div class="card mockup"><div class="title">D1 Auth</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line mid"></div><div class="line"></div><div class="btn"></div></div></div>
-      <div class="card mockup"><div class="title">D2 Catalogue</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line small"></div><div class="btn"></div></div></div>
-      <div class="card mockup"><div class="title">D3 Back-office</div><div class="frame-desktop"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-    </div>
-  </div>
+        <article class="frame">
+          <header><span>D3 - Espace staff</span><span class="tag">Wireframe</span></header>
+          <div class="body">
+            <div class="wire h-22 w-70"></div>
+            <div class="wire h-16 w-100"></div>
+            <div class="wire h-74 w-100"></div>
+            <div class="wire h-16 w-85"></div>
+            <div class="wire h-30 w-55"></div>
+          </div>
+        </article>
+      </div>
+    </section>
 
-  <div class="section">
-    <h2>Mockups Mobile</h2>
-    <div class="grid">
-      <div class="card mockup"><div class="title">M1 Auth</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-      <div class="card mockup"><div class="title">M2 Catalogue</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-      <div class="card mockup"><div class="title">M3 Suivi</div><div class="frame-mobile"><div class="hero"></div><div class="line"></div><div class="line"></div><div class="btn"></div></div></div>
-    </div>
-  </div>
+    <section class="section">
+      <h2>Wireframes Mobile</h2>
+      <p>Parcours compact pour smartphone.</p>
+      <div class="mobile-wrap">
+        <article class="mobile">
+          <div class="screen">
+            <div class="wire h-22 w-70"></div>
+            <div class="wire h-16 w-100"></div>
+            <div class="wire h-30 w-100"></div>
+            <div class="wire h-30 w-100"></div>
+            <div class="wire h-30 w-70"></div>
+          </div>
+        </article>
+
+        <article class="mobile">
+          <div class="screen">
+            <div class="wire h-22 w-85"></div>
+            <div class="wire h-30 w-100"></div>
+            <div class="wire h-74 w-100"></div>
+            <div class="wire h-74 w-100"></div>
+            <div class="wire h-30 w-70"></div>
+          </div>
+        </article>
+
+        <article class="mobile">
+          <div class="screen">
+            <div class="wire h-22 w-85"></div>
+            <div class="wire h-16 w-100"></div>
+            <div class="wire h-74 w-100"></div>
+            <div class="wire h-74 w-100"></div>
+            <div class="wire h-22 w-55"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Mockups Desktop</h2>
+      <p>Version visuelle proche du rendu du site.</p>
+      <div class="grid-3">
+        <article class="frame mock">
+          <header><span>D1 - Connexion / Inscription unifiee</span><span class="tag">Mockup</span></header>
+          <div class="body">
+            <div class="hero-card"></div>
+            <div class="chip-row">
+              <span class="chip">Se connecter</span>
+              <span class="chip">Creer un compte</span>
+            </div>
+            <div class="wire h-16 w-100" style="background:#f2e2d3"></div>
+            <div class="wire h-16 w-85" style="background:#f2e2d3"></div>
+            <div class="btn">Valider</div>
+          </div>
+        </article>
+
+        <article class="frame mock">
+          <header><span>D2 - Catalogue client premium</span><span class="tag">Mockup</span></header>
+          <div class="body">
+            <div class="chip-row">
+              <span class="chip">Noel</span>
+              <span class="chip">Paques</span>
+              <span class="chip">Vegan</span>
+            </div>
+            <div class="hero-card"></div>
+            <div class="wire h-12 w-100" style="background:#edd8c1"></div>
+            <div class="wire h-12 w-70" style="background:#edd8c1"></div>
+            <div class="btn">Commander ce menu</div>
+          </div>
+        </article>
+
+        <article class="frame mock">
+          <header><span>D3 - Pilotage staff / admin</span><span class="tag">Mockup</span></header>
+          <div class="body">
+            <div class="kanban">
+              <div class="col">
+                <div class="col-title">En attente</div>
+                <div class="ticket"></div>
+                <div class="ticket"></div>
+              </div>
+              <div class="col">
+                <div class="col-title">Preparation</div>
+                <div class="ticket"></div>
+              </div>
+              <div class="col">
+                <div class="col-title">Terminee</div>
+                <div class="ticket"></div>
+              </div>
+            </div>
+            <div class="wire h-16 w-100" style="background:#ecd5bd"></div>
+            <div class="btn">Mettre a jour statut</div>
+          </div>
+        </article>
+      </div>
+      <div class="legend">
+        <span>Palette chaude premium</span>
+        <span>Boutons arrondis d action</span>
+        <span>Cartes menu detaillees</span>
+        <span>Kanban commandes par statut</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Mockups Mobile</h2>
+      <p>Adaptation mobile avec priorite a la lisibilite et aux actions rapides.</p>
+      <div class="mobile-wrap">
+        <article class="mobile">
+          <div class="screen">
+            <div class="hero-card"></div>
+            <div class="chip-row">
+              <span class="chip">Login</span>
+              <span class="chip">Signup</span>
+            </div>
+            <div class="wire h-30 w-100" style="background:#f2dfcd"></div>
+            <div class="wire h-30 w-100" style="background:#f2dfcd"></div>
+            <div class="btn">Connexion</div>
+          </div>
+        </article>
+
+        <article class="mobile">
+          <div class="screen">
+            <div class="chip-row">
+              <span class="chip">Filtres</span>
+              <span class="chip">Themes</span>
+            </div>
+            <div class="hero-card"></div>
+            <div class="hero-card"></div>
+            <div class="wire h-12 w-85" style="background:#ecd6be"></div>
+            <div class="btn">Commander</div>
+          </div>
+        </article>
+
+        <article class="mobile">
+          <div class="screen">
+            <div class="wire h-22 w-70" style="background:#f1dec8"></div>
+            <div class="col">
+              <div class="ticket"></div>
+              <div class="ticket"></div>
+            </div>
+            <div class="col">
+              <div class="ticket"></div>
+            </div>
+            <div class="btn">Modifier</div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
