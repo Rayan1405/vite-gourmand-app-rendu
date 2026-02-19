@@ -1417,6 +1417,7 @@ async function start() {
       return;
     }
 
+    console.log('Verification SMTP en cours...');
     try {
       const smtpOk = await Promise.race([
         verifyMailer(),
@@ -1427,6 +1428,8 @@ async function start() {
       }
     } catch (error) {
       console.error('SMTP configure mais inaccessible:', error.message);
+    } finally {
+      console.log('Verification SMTP terminee.');
     }
   })();
 

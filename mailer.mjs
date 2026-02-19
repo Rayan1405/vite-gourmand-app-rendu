@@ -9,6 +9,9 @@ let transportConfig = null;
 let currentForceIpv4 = false;
 
 const SMTP_RETRYABLE_ERROR = /(Greeting never received|Connection timeout|ETIMEDOUT|ECONNRESET|ENETUNREACH)/i;
+const SMTP_CONNECTION_TIMEOUT = Number(process.env.SMTP_CONNECTION_TIMEOUT || 10000);
+const SMTP_GREETING_TIMEOUT = Number(process.env.SMTP_GREETING_TIMEOUT || 10000);
+const SMTP_SOCKET_TIMEOUT = Number(process.env.SMTP_SOCKET_TIMEOUT || 20000);
 
 function createIpv4SocketProvider() {
   return (options, callback) => {
@@ -88,7 +91,10 @@ function createTransporter(config, forceIpv4) {
     host: config.host,
     port: config.port,
     secure: config.secure,
-    auth: { user: config.user, pass: config.pass }
+    auth: { user: config.user, pass: config.pass },
+    connectionTimeout: SMTP_CONNECTION_TIMEOUT,
+    greetingTimeout: SMTP_GREETING_TIMEOUT,
+    socketTimeout: SMTP_SOCKET_TIMEOUT
   };
   if (forceIpv4) {
     transportOptions.getSocket = createIpv4SocketProvider();
