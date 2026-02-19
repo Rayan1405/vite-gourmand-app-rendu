@@ -608,7 +608,7 @@ function openOrderSuccessModal(message) {
 
   orderSuccessRedirectTimer = setTimeout(() => {
     goToClientHome();
-  }, 1800);
+  }, 5000);
 }
 
 function closeOrderSuccessModal({ redirect = false } = {}) {
