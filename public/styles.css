@@ -2764,7 +2764,7 @@ button:hover {
   }
 }
 
-/* Ajustements finaux client premium */
+/* Ajustements finaux */
 .client-page .menu-quick-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
