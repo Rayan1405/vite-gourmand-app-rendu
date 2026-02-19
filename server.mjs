@@ -49,6 +49,10 @@ const ORDER_STATUSES = [
   'cancelled'
 ];
 const GEO_CACHE = new Map();
+
+function hasSmtpConfig() {
+  return Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
+}
 function authorSqlExpr() {
   return USE_MYSQL
     ? "CONCAT(u.first_name, ' ', LEFT(u.last_name, 1), '.')"
@@ -1406,15 +1410,23 @@ async function start() {
   });
 
   (async () => {
+    if (hasSmtpConfig()) {
+      console.log(`SMTP configuration detectee (${SMTP_HOST}:${SMTP_PORT}, secure=${SMTP_SECURE}, ipv4_force=${SMTP_FORCE_IPV4})`);
+    } else {
+      console.warn('SMTP non configure: verifier SMTP_HOST, SMTP_USER et SMTP_PASS.');
+      return;
+    }
+
     try {
-      const smtpOk = await verifyMailer();
+      const smtpOk = await Promise.race([
+        verifyMailer(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout verification SMTP (20s)')), 20_000))
+      ]);
       if (smtpOk) {
         console.log('SMTP connecte: les emails reels sont actifs.');
       }
     } catch (error) {
-      if (SMTP_HOST && SMTP_USER) {
-        console.error('SMTP configure mais inaccessible:', error.message);
-      }
+      console.error('SMTP configure mais inaccessible:', error.message);
     }
   })();
 
