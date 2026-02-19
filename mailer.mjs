@@ -5,6 +5,10 @@ import { Resolver } from 'node:dns';
 
 let transporter = null;
 let fromAddress = 'no-reply@vitegourmand.fr';
+let transportConfig = null;
+let currentForceIpv4 = false;
+
+const SMTP_RETRYABLE_ERROR = /(Greeting never received|Connection timeout|ETIMEDOUT|ECONNRESET|ENETUNREACH)/i;
 
 function createIpv4SocketProvider() {
   return (options, callback) => {
@@ -22,26 +26,85 @@ function createIpv4SocketProvider() {
 
       const ip = addresses[0];
       const connectOptions = {
-        ...options,
         host: ip,
-        family: 4
+        port: options.port,
+        family: 4,
+        localAddress: options.localAddress
       };
 
       if (options.secure) {
         connectOptions.servername = options.servername || options.host;
+        if (options.tls && typeof options.tls === 'object') {
+          Object.assign(connectOptions, options.tls);
+        }
       }
 
       try {
         const connection = options.secure ? tls.connect(connectOptions) : net.connect(connectOptions);
-        callback(null, {
-          connection,
-          secured: Boolean(options.secure)
+        let done = false;
+        const finish = (err, result) => {
+          if (done) return;
+          done = true;
+          connection.removeListener('connect', onConnect);
+          connection.removeListener('secureConnect', onSecureConnect);
+          connection.removeListener('error', onError);
+          connection.setTimeout(0);
+          callback(err, result);
+        };
+        const onError = () => {
+          try {
+            connection.destroy();
+          } catch {
+            // ignore
+          }
+          callback(null);
+        };
+        const onConnect = () => {
+          finish(null, { connection, secured: false });
+        };
+        const onSecureConnect = () => {
+          finish(null, { connection, secured: true });
+        };
+
+        connection.once('error', onError);
+        connection.setTimeout(Number(options.connectionTimeout || 120000), () => {
+          onError();
         });
+
+        if (options.secure) {
+          connection.once('secureConnect', onSecureConnect);
+        } else {
+          connection.once('connect', onConnect);
+        }
       } catch {
         callback(null);
       }
     });
   };
+}
+
+function createTransporter(config, forceIpv4) {
+  const transportOptions = {
+    host: config.host,
+    port: config.port,
+    secure: config.secure,
+    auth: { user: config.user, pass: config.pass }
+  };
+  if (forceIpv4) {
+    transportOptions.getSocket = createIpv4SocketProvider();
+  }
+  return nodemailer.createTransport(transportOptions);
+}
+
+function isRetryableSmtpError(error) {
+  return SMTP_RETRYABLE_ERROR.test(String(error?.message || ''));
+}
+
+function switchTransport(forceIpv4) {
+  if (!transportConfig) return false;
+  transporter = createTransporter(transportConfig, forceIpv4);
+  currentForceIpv4 = forceIpv4;
+  return true;
 }
 
 function escapeHtml(value = '') {
@@ -72,26 +135,34 @@ export function initMailer({ host, port, secure, user, pass, from, forceIpv4 = f
   }
 
   fromAddress = from || user;
-  const transportOptions = {
+  transportConfig = {
     host,
     port,
     secure,
-    auth: { user, pass }
+    user,
+    pass
   };
-
-  if (forceIpv4) {
-    transportOptions.getSocket = createIpv4SocketProvider();
-  }
-
-  transporter = nodemailer.createTransport(transportOptions);
+  currentForceIpv4 = Boolean(forceIpv4);
+  transporter = createTransporter(transportConfig, currentForceIpv4);
 
   return transporter;
 }
 
 export async function verifyMailer() {
   if (!transporter) return false;
-  await transporter.verify();
-  return true;
+  try {
+    await transporter.verify();
+    return true;
+  } catch (error) {
+    if (!transportConfig || !isRetryableSmtpError(error)) throw error;
+
+    const fallbackMode = !currentForceIpv4;
+    if (!switchTransport(fallbackMode)) throw error;
+
+    await transporter.verify();
+    console.warn(`SMTP: bascule automatique vers le mode ${fallbackMode ? 'IPv4 force' : 'standard'} apres erreur "${error.message}"`);
+    return true;
+  }
 }
 
 export async function sendMail(to, { subject, text, html }) {
@@ -110,6 +181,25 @@ export async function sendMail(to, { subject, text, html }) {
     });
     return true;
   } catch (error) {
+    if (transportConfig && isRetryableSmtpError(error)) {
+      const fallbackMode = !currentForceIpv4;
+      if (switchTransport(fallbackMode)) {
+        try {
+          await transporter.sendMail({
+            from: fromAddress,
+            to,
+            subject,
+            text,
+            html
+          });
+          console.warn(`SMTP: envoi reussi apres bascule vers le mode ${fallbackMode ? 'IPv4 force' : 'standard'}.`);
+          return true;
+        } catch (fallbackError) {
+          console.error('Erreur envoi mail:', fallbackError.message);
+          return false;
+        }
+      }
+    }
     console.error('Erreur envoi mail:', error.message);
     return false;
   }
